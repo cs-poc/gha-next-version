@@ -19,7 +19,7 @@ jobs:
         run: |
           npm run package
           if ! git diff --quiet --exit-code dist/; then
-            echo "::error::Please run `npm run package` before pushing/merging"
+            echo "::error::Please run 'npm run package' before pushing/merging"
             exit 1
           fi
 
