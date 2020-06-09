@@ -10,6 +10,7 @@ Determine next release version for given major version, using existing tags.
 uses: cs-poc/gha-next-version@v1
 with:
   base: ${{ github.ref }}
+  separator: .
   github-token: ${{ github.token }}
 ```
 
