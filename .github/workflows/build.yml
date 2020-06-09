@@ -12,8 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 250 # needed for changelog
 
       - uses: actions/cache@v2
         with:
@@ -33,11 +31,6 @@ jobs:
             echo "::error file=dist/index.js::Please run 'npm run package' before pushing/merging"
             exit 1
           fi
-
-      # TODO remove
-      - name: Create Changelog
-        run: |
-          git log v1.0..${{ github.sha }}
 
   test:
     runs-on: ubuntu-latest
@@ -60,7 +53,9 @@ jobs:
     needs: [units,test]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/releases/')
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Find next version
         id: version
@@ -68,10 +63,8 @@ jobs:
 
       - name: Create Changelog
         id: changelog
-        uses: jimschubert/beast-changelog-action@v1
-        with:
-          FROM: ${{ steps.version.outputs.last }}
-          TO: ${{ github.sha }}
+        run: |
+          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty='format:%H %s (%ad) > ${{ runner.temp }}/CHANGELOG.md
 
       - name: Create a release
         #uses: actions/create-release@v1
@@ -84,10 +77,16 @@ jobs:
           #body: >
           #  Automatic release of ${{ steps.next_version.outputs.result }}
           script: |
+            const fs = require("fs");
+            const util = require("util");
+            const readFile = util.promisify(fs.readFile);
+
+            const changelog = await readFile("${{ runner.temp }}/CHANGELOG.md");
+
             await github.repos.createRelease({
               ...context.repo,
               name: "${{ steps.version.outputs.next }}",
               tag_name: "${{ steps.version.outputs.next }}",
-              body: "Automatic release of ${{ steps.version.outputs.next }}",
+              body: "Automatic release of ${{ steps.version.outputs.next }}\n\n" + changelog,
               target_commitish: context.sha,
             });
