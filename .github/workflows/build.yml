@@ -35,7 +35,6 @@ jobs:
       # TODO remove
       - name: Create Changelog
         run: |
-          git fetch --prune --unshallow
           git log v1.0..${{ github.sha }}
 
   test:
