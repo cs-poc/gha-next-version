@@ -3,7 +3,12 @@ description: 'Determine next release version for given major version, using exis
 inputs:
   base:
     description: 'Base version, e.g. "v1", "2.3" or "refs/heads/releases/v1"'
-    required: true
+    default: ${{ github.ref }}
+    required: false
+  github-token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: false
 outputs:
   base:
     description: 'Normalized base version'
