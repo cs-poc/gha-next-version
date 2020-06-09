@@ -17,7 +17,9 @@ async function run() {
 
         // Call
         const base = core.getInput("base", {required: true});
-        const result = nextVersion(base, tags);
+        const separator = core.getInput("separator", {required: true});
+
+        const result = nextVersion(base, tags, {separator});
 
         // Set outputs
         Object.keys(result).forEach(key => {

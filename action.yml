@@ -8,6 +8,10 @@ inputs:
     description: 'Base version, e.g. "v1", "2.3" or "refs/heads/releases/v1"'
     default: ${{ github.ref }}
     required: false
+  separator:
+    description: 'Separator between prefix and automatically incremented version'
+    default: '.'
+    required: false
   github-token:
     description: The GitHub token used to create an authenticated client
     default: ${{ github.token }}

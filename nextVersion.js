@@ -1,13 +1,27 @@
-function nextVersion(base, tags) {
+const escapeRegExp = require('lodash.escaperegexp');
+
+function calculateNext(prefix, last) {
+    if (last) {
+        const lastPart = parseInt(last.substring(prefix.length), 10) || 0;
+        return prefix + (lastPart + 1);
+    } else {
+        return prefix + "0";
+    }
+}
+
+function nextVersion(base, tags, options = {separator: "."}) {
     // Normalize version base string
+    const separator = options.separator;
     const baseVersion = base.replace(/^.+\//, "").replace(/\.+$/, "");
+    const baseString = baseVersion + separator;
     console.log("base version", baseVersion);
 
     // Sort tags using natural-sort (so 10 is after 9, not before 2)
     const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
 
     // Find tags for this release train
-    const relevantTags = tags.filter(t => t.startsWith(baseVersion + ".")).sort(collator.compare);
+    const matchRegexp = new RegExp("^" + escapeRegExp(baseString));
+    const relevantTags = tags.filter(t => matchRegexp.test(t)).sort(collator.compare);
     console.log("relevant tags", relevantTags);
 
     // Get latest version
@@ -15,7 +29,7 @@ function nextVersion(base, tags) {
     console.log("last version", last);
 
     // Calculate next version
-    const next = last ? baseVersion + "." + (parseInt(last.substring(baseVersion.length + 1), 10) + 1) : baseVersion + ".0";
+    const next = calculateNext(baseString, last);
     console.log("next version", next);
 
     // Return

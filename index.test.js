@@ -36,3 +36,21 @@ test('base with branch path', () => {
 test('without "v" prefix', () => {
     expect(nextVersion("2", ["2.0"])).toEqual({base: "2", last: "2.0", next: "2.1"});
 });
+test('without minor version', () => {
+    // NOTE This ignores existing tag and creates 1.0, instead of 1.1 as one would expect - it is intentional, as it makes code a lot easier
+    expect(nextVersion("v1", ["v1"])).toEqual({base: "v1", last: undefined, next: "v1.0"});
+});
+test('major version only with empty separator', () => {
+    expect(nextVersion("v", ["v2.1", "v2.1.1", "v2.0", "v3.0", "v1.1.2"], {separator: ""})).toEqual({
+        base: "v",
+        last: "v3.0",
+        next: "v4"
+    });
+    expect(nextVersion("v", ["v1", "v5"], {separator: ""})).toEqual({base: "v", last: "v5", next: "v6"});
+});
+test('first major version with empty separator', () => {
+    // NOTE one would expect v1 here, but that would require complex logic,
+    // since when ve start on first version with base v1, it would be wierd to have first release v1.1,
+    // so we simply append 0 to base
+    expect(nextVersion("v", [], {separator: ""})).toEqual({base: "v", last: undefined, next: "v0"});
+});
