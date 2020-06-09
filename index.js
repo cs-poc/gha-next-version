@@ -1,9 +1,11 @@
 const core = require('@actions/core');
 const {context, getOctokit} = require('@actions/github');
 const nextVersion = require('./nextVersion')
-// fake change
+
 async function run() {
     try {
+        console.log("change test");
+
         // Prepare context
         const token = core.getInput('github-token', {required: true});
         const github = getOctokit(token, {});
