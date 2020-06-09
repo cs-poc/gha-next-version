@@ -34,12 +34,12 @@ jobs:
 
       # TODO remove
       - name: Create Changelog
-        id: changelog
-        uses: jimschubert/beast-changelog-action@v1
-        with:
-          FROM: v1.0
-          TO: ${{ github.sha }}
-      - run: cat .github/CHANGELOG.md
+        run: |
+          docker pull jimschubert/changelog:latest
+          docker run -e GITHUB_TOKEN=${{ github.token }} \
+                     -e GITHUB_OWNER=${{ github.repository_owner }} \
+                     -e GITHUB_REPO=gha-next-version \
+                     jimschubert/changelog:latest -f v1.0 -t ${{ github.sha }}
 
   test:
     runs-on: ubuntu-latest
