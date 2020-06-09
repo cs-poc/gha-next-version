@@ -64,7 +64,12 @@ jobs:
       - name: Create Changelog
         id: changelog
         run: |
-          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty=oneline
+          RESULT=$(git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty=oneline)
+          # Escape
+          RESULT="${RESULT//'%'/'%25'}"
+          RESULT="${RESULT//$'\n'/'%0A'}"
+          RESULT="${RESULT//$'\r'/'%0D'}"
+          echo ::set-output name=result::${RESULT}
 
       - name: Create a release
         #uses: actions/create-release@v1
@@ -74,19 +79,14 @@ jobs:
           #tag_name: ${{ steps.next_version.outputs.result }}
           #release_name: ${{ steps.next_version.outputs.result }}
           #commitish: ${{ github.sha }}
-          #body: >
-          #  Automatic release of ${{ steps.next_version.outputs.result }}
+          #body: |
+          #  ## Changelog
+          #  ${{ steps.changelog.outputs.result }}
           script: |
-            const fs = require("fs");
-            const util = require("util");
-            const readFile = util.promisify(fs.readFile);
-
-            const changelog = await readFile("${{ runner.temp }}/CHANGELOG.md");
-
             await github.repos.createRelease({
               ...context.repo,
               name: "${{ steps.version.outputs.next }}",
               tag_name: "${{ steps.version.outputs.next }}",
-              body: "Automatic release of ${{ github.repository }} ${{ steps.version.outputs.next }}\n\n" + changelog,
+              body: "## Changelog\n${{ steps.changelog.outputs.result }}",
               target_commitish: context.sha,
             });
