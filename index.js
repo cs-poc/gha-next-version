@@ -21,9 +21,8 @@ async function run() {
 
         // Set outputs
         Object.keys(result).forEach(key => {
-            console.log("output", key, this[key]);
-            if (this[key] !== undefined) core.setOutput(key, this[key]);
-        }, result);
+            if (result[key] !== undefined) core.setOutput(key, result[key]);
+        });
     } catch (error) {
         core.setFailed(error.message);
     }

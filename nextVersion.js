@@ -23,7 +23,7 @@ function nextVersion(base, tags) {
         base: baseVersion,
         last,
         next
-    }
+    };
 }
 
 module.exports = nextVersion;
