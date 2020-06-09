@@ -1,7 +1,4 @@
-
-<p align="center">
-  <a href="https://github.com/cs-poc/gha-next-version/actions"><img alt="javscript-action status" src="https://github.com/cs-poc/gha-next-version/workflows/units-test/badge.svg"></a>
-</p>
+![units-test](https://github.com/cs-poc/gha-next-version/workflows/units-test/badge.svg)
 
 # Next Version Action
 
