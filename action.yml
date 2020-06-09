@@ -1,5 +1,8 @@
 name: 'Next Version'
 description: 'Determine next release version for given major version, using existing tags'
+branding:
+  color: blue
+  icon: trending-up
 inputs:
   base:
     description: 'Base version, e.g. "v1", "2.3" or "refs/heads/releases/v1"'
