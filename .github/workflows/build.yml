@@ -64,7 +64,7 @@ jobs:
       - name: Create Changelog
         id: changelog
         run: |
-          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty='format:%H %s (%ad) > ${{ runner.temp }}/CHANGELOG.md
+          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty=oneline
 
       - name: Create a release
         #uses: actions/create-release@v1
@@ -87,6 +87,6 @@ jobs:
               ...context.repo,
               name: "${{ steps.version.outputs.next }}",
               tag_name: "${{ steps.version.outputs.next }}",
-              body: "Automatic release of ${{ steps.version.outputs.next }}\n\n" + changelog,
+              body: "Automatic release of ${{ github.repository }} ${{ steps.version.outputs.next }}\n\n" + changelog,
               target_commitish: context.sha,
             });
