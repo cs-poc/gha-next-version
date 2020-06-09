@@ -4,8 +4,6 @@ const nextVersion = require('./nextVersion')
 
 async function run() {
     try {
-        console.log("change test")
-
         // Prepare context
         const token = core.getInput('github-token', {required: true});
         const github = getOctokit(token, {});
