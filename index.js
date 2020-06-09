@@ -1,22 +1,32 @@
 const core = require('@actions/core');
-const wait = require('./wait');
+const {context, getOctokit} = require('@actions/github');
+const nextVersion = require('./nextVersion')
 
-
-// most @actions toolkit packages have async methods
 async function run() {
-  try { 
-    const ms = core.getInput('milliseconds');
-    console.log(`Waiting ${ms} milliseconds ...`)
+    try {
+        // Prepare context
+        const token = core.getInput('github-token', {required: true});
+        const github = getOctokit(token, {});
 
-    core.debug((new Date()).toTimeString())
-    await wait(parseInt(ms));
-    core.debug((new Date()).toTimeString())
+        // Get tags
+        const {data: refs} = await github.git.listMatchingRefs({
+            ...context.repo,
+            ref: 'tags',
+        });
+        const tags = refs.map(r => r.ref).map(r => r.replace(/^refs\/tags\//, ""));
 
-    core.setOutput('time', new Date().toTimeString());
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
+        // Call
+        const base = core.getInput("base", {required: true});
+        const result = nextVersion(base, tags);
+
+        // Set outputs
+        Object.keys(result).forEach(key => {
+            console.log("output", key, this[key]);
+            if (this[key] !== undefined) core.setOutput(key, this[key]);
+        }, result);
+    } catch (error) {
+        core.setFailed(error.message);
+    }
 }
 
 run()

@@ -1,18 +1,18 @@
 
 <p align="center">
-  <a href="https://github.com/cs-poc/gha-automatic-release/actions"><img alt="javscript-action status" src="https://github.com/cs-poc/gha-automatic-release/workflows/units-test/badge.svg"></a>
+  <a href="https://github.com/cs-poc/gha-next-version/actions"><img alt="javscript-action status" src="https://github.com/cs-poc/gha-next-version/workflows/units-test/badge.svg"></a>
 </p>
 
-# Automatic Release Action
+# Next Version Action
 
-TODO
+Determine next release version for given major version, using existing tags.
 
 ## Usage
 
 ```yaml
-uses: cs-poc/gha-automatic-release@v1
+uses: cs-poc/gha-next-version@v1
 with:
-  base-branch: ${{ github.ref }}
+  base: ${{ github.ref }}
   github-token: ${{ github.token }}
 ```
 
@@ -29,7 +29,7 @@ $ npm test
 
  PASS  ./index.test.js
   ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
+  ✓ nextVersion 500 ms (504ms)
   ✓ test runs (95ms)
 
 ...

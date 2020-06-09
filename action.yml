@@ -1,13 +1,16 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Next Version'
+description: 'Determine next release version for given major version, using existing tags'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+  base:
+    description: 'Base version, e.g. "v1", "2.3" or "refs/heads/releases/v1"'
     required: true
-    default: '1000'
 outputs:
-  time: # output will be available to future steps 
-    description: 'The message to output'
+  base:
+    description: 'Normalized base version'
+  last:
+    description: 'Last existing version found for given base'
+  next:
+    description: 'Next release version'
 runs:
   using: 'node12'
   main: 'dist/index.js'

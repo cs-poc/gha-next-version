@@ -1,7 +1,7 @@
 {
-  "name": "javascript-action",
+  "name": "gha-next-version",
   "version": "1.0.0",
-  "description": "JavaScript Action Template",
+  "description": "Determine next release version for given major version",
   "main": "index.js",
   "scripts": {
     "lint": "eslint index.js",
@@ -10,21 +10,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/cs-poc/gha-next-version.git"
   },
   "keywords": [
     "GitHub",
     "Actions",
     "JavaScript"
   ],
-  "author": "GitHub",
+  "author": "Česká spořitelna",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
+    "url": "https://github.com/cs-poc/gha-next-version/issues"
   },
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "homepage": "https://github.com/cs-poc/gha-next-version#readme",
   "dependencies": {
-    "@actions/core": "^1.1.1"
+    "@actions/core": "^1.1.1",
+    "@actions/github": "^3.0.0"
   },
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
