@@ -1,0 +1,67 @@
+name: Build
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - releases/*
+
+jobs:
+  units:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+
+      - run: npm run package
+      - run: |
+          if git diff --quiet --exit-code dist/; then
+            echo Please run `npm run package` before merging
+            exit 1
+          fi
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: ./
+        id: version
+        with:
+          base: "refs/heads/releases/x1"
+      - run: |
+          if [[ "${{steps.version.outputs.base}}" != "x1" ]]; then
+            exit 1
+          fi
+          if [[ "${{steps.version.outputs.next}}" != "x1.0" ]]; then
+            exit 1
+          fi
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [units,test]
+    if: github.event_name = "push" && startsWith(github.ref, 'refs/heads/releases/')
+    steps:
+      - uses: actions/checkout@v1
+      - name: Find next version
+        id: version
+        uses: ./
+      - name: Create a release
+        #uses: actions/create-release@v1
+        # NOTE workaround, since actions/create-release@v1 does not support "commitish" parameter, see https://github.com/actions/create-release/pull/32
+        uses: actions/github-script@v2
+        with:
+          #tag_name: ${{ steps.next_version.outputs.result }}
+          #release_name: ${{ steps.next_version.outputs.result }}
+          #commitish: ${{ github.sha }}
+          #body: >
+          #  Automatic release of ${{ steps.next_version.outputs.result }}
+          script: |
+            await github.repos.createRelease({
+              ...context.repo,
+              name: "${{ steps.version.outputs.next }}",
+              tag_name: "${{ steps.version.outputs.next }}",
+              body: "Automatic release of ${{ steps.version.outputs.next }}",
+              target_commitish: context.sha,
+            });
