@@ -20,6 +20,7 @@ async function run() {
         const result = nextVersion(base, tags);
 
         // Set outputs
+        console.log("result", result);
         Object.keys(result).forEach(key => {
             if (result[key] !== undefined) core.setOutput(key, result[key]);
         });
