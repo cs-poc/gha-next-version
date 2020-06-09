@@ -32,6 +32,15 @@ jobs:
             exit 1
           fi
 
+      # TODO remove
+      - name: Create Changelog
+        id: changelog
+        uses: jimschubert/beast-changelog-action@v1
+        with:
+          FROM: ${{ steps.version.outputs.last }}
+          TO: ${{ context.sha }}
+      - run: cat .github/CHANGELOG.md
+
   test:
     runs-on: ubuntu-latest
     steps:
@@ -54,9 +63,18 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/releases/')
     steps:
       - uses: actions/checkout@v1
+
       - name: Find next version
         id: version
         uses: ./
+
+      - name: Create Changelog
+        id: changelog
+        uses: jimschubert/beast-changelog-action@v1
+        with:
+          FROM: ${{ steps.version.outputs.last }}
+          TO: ${{ context.sha }}
+
       - name: Create a release
         #uses: actions/create-release@v1
         # NOTE workaround, since actions/create-release@v1 does not support "commitish" parameter, see https://github.com/actions/create-release/pull/32
