@@ -66,7 +66,7 @@ jobs:
         id: changelog
         run: |
           echo "## Changelog" > ${{ runner.temp }}/CHANGELOG.md
-          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty='format:%H %s (%ad) >> ${{ runner.temp }}/CHANGELOG.md
+          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty=oneline >> ${{ runner.temp }}/CHANGELOG.md
 
       - name: Create a release
         #uses: actions/create-release@v1
