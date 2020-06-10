@@ -65,8 +65,7 @@ jobs:
       - name: Create Changelog
         id: changelog
         run: |
-          echo "## Changelog" > ${{ runner.temp }}/CHANGELOG.md
-          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty=oneline >> ${{ runner.temp }}/CHANGELOG.md
+          git log ${{ steps.version.outputs.last }}..${{ github.sha }} --pretty=oneline > ${{ runner.temp }}/CHANGELOG.md
 
       - name: Create a release
         #uses: actions/create-release@v1
@@ -84,12 +83,12 @@ jobs:
             const util = require("util");
             const readFile = util.promisify(fs.readFile);
 
-            const changelog = await readFile("${{ runner.temp }}/CHANGELOG.md");
+            const changelog = await readFile("${{ runner.temp }}/CHANGELOG.md", "utf8");
 
             await github.repos.createRelease({
               ...context.repo,
               name: "${{ steps.version.outputs.next }}",
               tag_name: "${{ steps.version.outputs.next }}",
-              body: changelog,
+              body: "## Changelog\n" + changelog,
               target_commitish: context.sha,
             });
